@@ -1,8 +1,9 @@
 // global variables
-let input = [1, 5, 2, 76, 19];
-const functions = ['add', 'add', 'subtract', 'add'];
+let functions = [];
+let inputArr = [];
+let input = '';
 let result = 0;
-// let display = `${result}`;
+let display = `0`;
 
 // operators
 const add = (a, b) => a + b; 
@@ -12,7 +13,7 @@ const divide = (a, b) => a / b;
 
 // evaluate the operations
 const operate = function() {
-    input.reduce((acc, el) => {
+    inputArr.reduce((acc, el) => {
         switch (functions.shift()) {
             case 'add': 
                 return add(acc, el);
@@ -23,18 +24,111 @@ const operate = function() {
             case 'divide':
                 return divide(acc, el);
         }
+        display = `${result}`
         result = acc;
-        input = [result];
+        inputArr = [result];
         // displayScreen(result);
     }, 0);
 };
 
 // calculator functions
-const clear = () => input = [];
-// const displayScreen = (str) => display = result.concat(` ${str}`) 
+const clear = () => {
+    inputArr = [];
+    functions = [];
+    display = '0';
+    input = '0';
+}
 
-operate();
-console.log(result);
-console.log(functions);
-console.log(input);
-// console.log(display);
+// User Interface
+const buttons = document.querySelectorAll('.calcBtn');
+const displayBox = document.querySelector('.display');
+
+
+buttons.forEach(btn => {
+    btn.addEventListener('click', (e) => clickButton(e.target.id));
+});
+
+const clickButton = function(id) {
+    if (display === '0') {display = ''}
+    switch (id) {
+        // Numbers
+        case 'btn1':
+            display = display.concat('1');
+            input = input.concat('1');
+            break;
+        case 'btn2':
+            display = display.concat('2');
+            input = input.concat('2');
+            break;
+        case 'btn3':
+            display = display.concat('3');
+            input = input.concat('3');
+            break;
+        case 'btn4':
+            display = display.concat('4');
+            input = input.concat('4');
+            break;
+        case 'btn5':
+            display = display.concat('5');
+            input = input.concat('5');
+            break;
+        case 'btn6':
+            display = display.concat('6');
+            input = input.concat('6');
+            break;
+        case 'btn7':
+            display = display.concat('7');
+            input = input.concat('7');
+            break;
+        case 'btn8':
+            display = display.concat('8');
+            input = input.concat('8');
+            break;
+        case 'btn9':
+            display = display.concat('9');
+            input = input.concat('9');
+            break;
+        // Calculator functions
+        case 'btnAdd':
+            functions.push('add');    
+            display = display.concat(' + ');
+            inputArr.push(parseInt(input));
+            input = '';
+            break;
+        case 'btnSubtract':
+            functions.push('subtract');    
+            display = display.concat(' - ');
+            inputArr.push(parseInt(input));
+            input = '';
+            break;
+        case 'btnMultiply':
+            functions.push('multiply');    
+            display = display.concat(' * ');
+            inputArr.push(parseInt(input));
+            input = '';
+            break;
+        // case 'btnOperate':
+        //     inputArr.push(parseInt(input));
+        //     console.log(functions)
+        //     console.log(inputArr)
+        //     operate();
+        //     console.log('result ', result, 'display ', display)
+        //     console.log(functions)
+        //     console.log(inputArr)
+        //     break;
+        case 'btnDelete':
+            if (display.length === 1 || display.length === 0) {
+                display = '0'
+            } else if (display[display.length - 1] === ' ') {
+                return;
+            } else {
+                display = display.substring(0, display.length - 1);
+            }
+            break;
+        case 'btnClear':
+            clear();
+            break;
+            
+    };
+    displayBox.innerText = display;
+} 
