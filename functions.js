@@ -13,7 +13,7 @@ const divide = (a, b) => a / b;
 
 // evaluate the operations
 const operate = function() {
-    inputArr.reduce((acc, el) => {
+    result = inputArr.reduce((acc, el) => {
         switch (functions.shift()) {
             case 'add': 
                 return add(acc, el);
@@ -24,11 +24,10 @@ const operate = function() {
             case 'divide':
                 return divide(acc, el);
         }
-        display = `${result}`
-        result = acc;
-        inputArr = [result];
-        // displayScreen(result);
-    }, 0);
+    });
+    display = `${result}`
+    input = result;
+    inputArr = [];
 };
 
 // calculator functions
@@ -92,30 +91,31 @@ const clickButton = function(id) {
         case 'btnAdd':
             functions.push('add');    
             display = display.concat(' + ');
-            inputArr.push(parseInt(input));
+            inputArr.push(parseFloat(input));
             input = '';
             break;
         case 'btnSubtract':
             functions.push('subtract');    
             display = display.concat(' - ');
-            inputArr.push(parseInt(input));
+            inputArr.push(parseFloat(input));
             input = '';
             break;
         case 'btnMultiply':
             functions.push('multiply');    
             display = display.concat(' * ');
-            inputArr.push(parseInt(input));
+            inputArr.push(parseFloat(input));
             input = '';
             break;
-        // case 'btnOperate':
-        //     inputArr.push(parseInt(input));
-        //     console.log(functions)
-        //     console.log(inputArr)
-        //     operate();
-        //     console.log('result ', result, 'display ', display)
-        //     console.log(functions)
-        //     console.log(inputArr)
-        //     break;
+        case 'btnDivide':
+            functions.push('divide');    
+            display = display.concat(' / ');
+            inputArr.push(parseFloat(input));
+            input = '';
+            break;
+        case 'btnOperate':
+            inputArr.push(parseFloat(input));
+            operate();
+            break;
         case 'btnDelete':
             if (display.length === 1 || display.length === 0) {
                 display = '0'
