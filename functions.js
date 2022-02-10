@@ -1,15 +1,11 @@
 window.addEventListener('keydown', keyPress)
 
 // global variables
-let functions = [];
-let inputArr = [];
+let [functions, inputArr] = [[], []];
 let input = '';
 let result = 0;
 let display = `0`;
-let isDot = false; // does not allow a '.' if there already is one
-let fromEqual = false; // does not allow modifying (e.g. DEL) a returned result
-let readyToOperate = false; // does not allow multiple operations without input (e.g. '++++++')
-let isSign = false; // allows the toggling of the sign operator
+let [isDot, fromEqual, readyToOperate, isSign] = [false, false, false, false];
 
 // operators
 const add = (a, b) => a + b; 
@@ -31,23 +27,15 @@ const operate = function() {
                 return divide(acc, el);
         }
     });
+    setDecimal(result);
     // update history, update display, and reset variables 
     updateHistory(display, result);
-    display = `${result.toFixed()}`;
+    display = `${result}`;
     input = result;
     inputArr = [];
     isDot = false;
     fromEqual = true;
 };
-
-updateHistory = function(display, result) {
-    let historyDiv = document.createElement('div')
-    historyDiv.innerText = `${display} = ${result.toFixed(2)}`;
-    historyDiv.classList.add('history');
-    historyDiv.style.left = `${100 * Math.random()}%`;
-    historyDiv.style.top = `${100 * Math.random()}%`;
-    document.querySelector('body').append(historyDiv);
-}
 
 // Buttons
 const buttons = document.querySelectorAll('.calcBtn');
@@ -61,8 +49,7 @@ const clickButton = function(id) {
     let btn = document.getElementById(id)
     if (btn.classList.contains('num') && !fromEqual) {
         if (display === '0') {
-            display = '';
-            input = '';
+            [display, input] = ['', ''];
         };
         readyToOperate = true;
         switch (id) {
@@ -141,14 +128,27 @@ const clickButton = function(id) {
     displayBox.innerText = display;
 }; 
 
+function setDecimal(num) {
+    if (num % 1 === 0) {
+        result = num.toFixed();
+    } else {
+        result = num.toFixed(2);
+    }
+}
+
+function updateHistory(display, result) {
+    let historyDiv = document.createElement('div')
+    historyDiv.innerText = `${display} = ${result}`;
+    historyDiv.classList.add('history');
+    historyDiv.style.left = `${100 * Math.random()}%`;
+    historyDiv.style.top = `${100 * Math.random()}%`;
+    document.querySelector('body').append(historyDiv);
+}
+
 function clear() {
-    inputArr = [];
-    functions = [];
-    display = '0';
-    input = '0';
-    isDot = false;
-    fromEqual = false;
-    readyToOperate = false;
+    [inputArr, functions] = [[], []];
+    [display, input] = ['0', '0'];
+    [isDot, fromEqual, readyToOperate] = [false, false, false];
 };
 
 function del() {
@@ -217,7 +217,6 @@ function changeSign() {
                     let arr2 = display.slice(i+1);
                     arr2.unshift(sign);
                     display = arr1.join('').concat(arr2.join(''));
-                    console.log(arr2);
                     input = sign.concat(input);
                     isSign = true;
                     return;
@@ -228,7 +227,6 @@ function changeSign() {
 }
 
 function keyPress(event) {
-    console.log(event.key)
     switch (event.key) {
         case '0':
             clickButton('btn0');

@@ -12,11 +12,15 @@ body {
     background: linear-gradient(to right, #2a017e, #5d1d96); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     font-family: 'Press Start 2P', cursive;
     font-size: 12px;
+    overflow: hidden;
 }
 
 .calcBtn {
     width: var(--btnSize);
     font-family: 'Press Start 2P', cursive;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .calcBtn:hover {
@@ -85,15 +89,30 @@ p {
     z-index: 1;
 }
 
-.source {
+.info {
     position: absolute;
-    bottom: 5px;
+    bottom: -35px;
+    color: white;
+    font-size: .75em;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 1s
+}
+
+.info:hover {
+    bottom: 10px;
+}
+
+.infoBtn {
+    font-size: 4em;
 }
 
 a {
     text-decoration: none;
     color: white;
-    font-size: .75em;
 }
 
 @media screen and (max-width: 525px) {
@@ -109,6 +128,9 @@ a {
     }
     p {
         transform: rotate(-90deg); 
+    }
+    #btnSign {
+        font-size: .70em;
     }
 }
 
