@@ -58,24 +58,35 @@ body {
     background: lime;
     display: inline-block;
     animation: blink 1.15s steps(2) infinite;
-  }
+}
 
-  .calculator {
+.calculator {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 9;
-  }
+}
 
-  .history {
+.history {
     position: absolute;
     color: lime;
     z-index: 1;
-  }
+}
+
+.source {
+    position: absolute;
+    bottom: 5px;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+    font-size: .75em;
+}
 
   @keyframes blink {
-      0% {
-          opacity: 0;
-      }
-  }
+    0% {
+        opacity: 0;
+    }
+}

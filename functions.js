@@ -19,7 +19,7 @@ const divide = (a, b) => a / b;
 // evaluate the operations
 const operate = function() {
     result = inputArr.reduce((acc, el) => {
-        switch (functions.shift()) {
+        switch (functions.shift(2)) {
             case 'add': 
                 return add(acc, el);
             case 'subtract':
@@ -32,7 +32,7 @@ const operate = function() {
     });
     // update history, update display, and reset variables 
     updateHistory(display, result);
-    display = `${result.toFixed(2)}`;
+    display = `${result.toFixed()}`;
     input = result;
     inputArr = [];
     isDot = false;
