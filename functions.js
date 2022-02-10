@@ -7,8 +7,9 @@ let input = '';
 let result = 0;
 let display = `0`;
 let isDot = false; // does not allow a '.' if there already is one
-let isResult = false; // does not allow modifying (e.g. DEL) a returned result
-let readyToOperate = false; // does not allow multiple operations without input
+let fromEqual = false; // does not allow modifying (e.g. DEL) a returned result
+let readyToOperate = false; // does not allow multiple operations without input (e.g. '++++++')
+let isSign = false; // allows the toggling of the sign operator
 
 // operators
 const add = (a, b) => a + b; 
@@ -20,13 +21,13 @@ const divide = (a, b) => a / b;
 const operate = function() {
     result = inputArr.reduce((acc, el) => {
         switch (functions.shift(2)) {
-            case 'add': 
+            case '+': 
                 return add(acc, el);
-            case 'subtract':
+            case '-':
                 return subtract(acc, el);
-            case 'multiply':
+            case '*':
                 return multiply(acc, el);
-            case 'divide':
+            case '/':
                 return divide(acc, el);
         }
     });
@@ -36,27 +37,16 @@ const operate = function() {
     input = result;
     inputArr = [];
     isDot = false;
-    isResult = true;
-};
-
-const clear = () => {
-    inputArr = [];
-    functions = [];
-    display = '0';
-    input = '0';
-    isDot = false;
-    isResult = false;
-    readyToOperate = false;
+    fromEqual = true;
 };
 
 updateHistory = function(display, result) {
-    let historyContainer = document.querySelector('body');
     let historyDiv = document.createElement('div')
     historyDiv.innerText = `${display} = ${result.toFixed(2)}`;
     historyDiv.classList.add('history');
     historyDiv.style.left = `${100 * Math.random()}%`;
     historyDiv.style.top = `${100 * Math.random()}%`;
-    historyContainer.append(historyDiv);
+    document.querySelector('body').append(historyDiv);
 }
 
 // Buttons
@@ -69,101 +59,73 @@ buttons.forEach(btn => {
 
 const clickButton = function(id) {
     let btn = document.getElementById(id)
-    if (btn.classList.contains('num') && !isResult) {
-        if (display === '0') {display = ''};
+    if (btn.classList.contains('num') && !fromEqual) {
+        if (display === '0') {
+            display = '';
+            input = '';
+        };
+        readyToOperate = true;
         switch (id) {
             // Numbers
             case 'btn1':
-                display = display.concat('1');
-                input = input.concat('1');
-                readyToOperate = true;
+                updateInput('1');
                 break;
             case 'btn2':
-                display = display.concat('2');
-                input = input.concat('2');
-                readyToOperate = true;
+                updateInput('2');
                 break;
             case 'btn3':
-                display = display.concat('3');
-                input = input.concat('3');
-                readyToOperate = true;
+                updateInput('3');
                 break;
             case 'btn4':
-                display = display.concat('4');
-                input = input.concat('4');
-                readyToOperate = true;
+                updateInput('4');
                 break;
             case 'btn5':
-                display = display.concat('5');
-                input = input.concat('5');
-                readyToOperate = true;
+                updateInput('5');
                 break;
             case 'btn6':
-                display = display.concat('6');
-                input = input.concat('6');
-                readyToOperate = true;
+                updateInput('6');
                 break;
             case 'btn7':
-                display = display.concat('7');
-                input = input.concat('7');
-                readyToOperate = true;
+                updateInput('7');
                 break;
             case 'btn8':
-                display = display.concat('8');
-                input = input.concat('8');
-                readyToOperate = true;
+                updateInput('8');
                 break;
             case 'btn9':
-                display = display.concat('9');
-                input = input.concat('9');
-                readyToOperate = true;
+                updateInput('9');
                 break;
             case 'btn0':
-                display = display.concat('0');
-                input = input.concat('0');
+                updateInput('0');
                 break;
             case 'btnDot':
                 if (isDot) {break;}
-                display = display.concat('.');
-                input = input.concat('.');
+                updateInput('.');
                 isDot = true;
+                readyToOperate = false;
+                break;
+            case 'btnSign':
+                changeSign();
                 break;
         };
     } else if (btn.classList.contains('operator') && readyToOperate) {
         switch (id) {
             // operator functions
             case 'btnAdd':
-                functions.push('add');    
-                display = display.concat(' + ');
-                inputArr.push(parseFloat(input));
-                resetOperator();
+                updateOperator('+');
                 break;
             case 'btnSubtract':
-                functions.push('subtract');    
-                display = display.concat(' - ');
-                inputArr.push(parseFloat(input));
-                resetOperator();
+                updateOperator('-');
                 break;
             case 'btnMultiply':
-                functions.push('multiply');    
-                display = display.concat(' * ');
-                inputArr.push(parseFloat(input));
-                resetOperator();
+                updateOperator('*');
                 break;
             case 'btnDivide':
-                functions.push('divide');    
-                display = display.concat(' / ');
-                inputArr.push(parseFloat(input));
-                resetOperator();
+                updateOperator('/');
                 break;    
             case 'btnOperate':
                 inputArr.push(parseFloat(input));
                 operate();
                 break;
-        // case 'btnSign':
-        //     input = input * -1;
-        //     how to update the display appropriately??
-        //     break;
         };
     } else {
         switch (id) {
@@ -172,98 +134,156 @@ const clickButton = function(id) {
                 clear();
                 break;
             case 'btnDelete':
-                if (isResult) {
-                    return;
-                } else if (display.length === 1 || display.length === 0) {
-                    display = '0'
-                } else if (display[display.length - 1] === ' ') {
-                    return;
-                } else {
-                    display = display.substring(0, display.length - 1);
-                }
+                del();
                 break;
         };
     }
     displayBox.innerText = display;
-} 
+}; 
+
+function clear() {
+    inputArr = [];
+    functions = [];
+    display = '0';
+    input = '0';
+    isDot = false;
+    fromEqual = false;
+    readyToOperate = false;
+};
+
+function del() {
+    if (fromEqual) {
+        return;
+    } else if (display.length === 1 || display.length === 0) {
+        display = '0';
+        input = '0';
+    } else if (display[display.length - 1] === ' ') {
+        return;
+    } else {
+        display = display.substring(0, display.length - 1);
+        input = input.substring(0, input.length - 1);
+    }
+}
+
+function updateOperator(operation) {
+    functions.push(operation);    
+    display = display.concat(` ${operation} `);
+    inputArr.push(parseFloat(input));
+    resetOperator();
+}
+
+function updateInput(num) {
+    display = display.concat(num);
+    input = input.concat(num);
+}
 
 function resetOperator() {
     input = '';
     isDot = false;
-    isResult = false;
+    fromEqual = false;
     readyToOperate = false;
+    isSign = false;
+}
+
+function changeSign() {
+    let sign = '-';
+    if (display === 0) {display = '0';}
+    else if (functions.length === 0) {
+        if (isSign === false) {
+            input = sign.concat(input);
+            display = input;
+            isSign = true;    
+        } else {
+            input = input.substring(1);
+            display = input;
+            isSign = false;
+        }
+    } else {
+        // find the index of the last ' ' in the display string so you can add the sign after it
+        let index = display.length - 1;
+        display = display.split('');
+        for (let i = index; i > 0; i--) {
+            if (display[i] === ' ') {
+                // remove sign
+                if (isSign === true) {
+                    display.splice(i + 1, 1);
+                    display = display.join('');
+                    input = input.substring(1);
+                    isSign = false;
+                    return;
+                // add sign
+                } else {
+                    let arr1 = display.slice(0, i+1);
+                    let arr2 = display.slice(i+1);
+                    arr2.unshift(sign);
+                    display = arr1.join('').concat(arr2.join(''));
+                    console.log(arr2);
+                    input = sign.concat(input);
+                    isSign = true;
+                    return;
+                }
+            }
+        }
+    }
 }
 
 function keyPress(event) {
-    console.log(event.keyCode)
-    switch (event.keyCode) {
-        case 96: 
-        case 48: 
+    console.log(event.key)
+    switch (event.key) {
+        case '0':
             clickButton('btn0');
             break;
-        case 97:
-        case 49: 
+        case '1': 
             clickButton('btn1');
             break;
-        case 98:
-        case 50: 
+        case '2':
             clickButton('btn2');
             break;
-        case 99: 
-        case 51:
+        case '3':
             clickButton('btn3');
             break;
-        case 100:
-        case 52: 
+        case '4':
             clickButton('btn4');
             break;
-        case 101:
-        case 53:
+        case '5':
             clickButton('btn5');
             break;
-        case 102:
-        case 54: 
+        case '6':
             clickButton('btn6');
             break;
-        case 103:
-        case 55: 
+        case '7':
             clickButton('btn7');
             break;
-        case 104:
-        case 56: 
+        case '8':
             clickButton('btn8');
             break;
-        case 105:
-        case 57: 
+        case '9':
             clickButton('btn9');
             break;
-        case 110:
-        case 190: 
+        case '.': 
             clickButton('btnDot');
             break;
-        case 106:
+        case '*':
             clickButton('btnMultiply');
             break;
-        case 107:
-        case 187:
+        case '+':
             clickButton('btnAdd');
             break;
-        case 109:
-        case 189:
+        case '-':
             clickButton('btnSubtract');
             break;
-        case 111:
-        case 191:
+        case '/':
             clickButton('btnDivide');
             break;
-        case 13:
+        case 'Enter':
+        case '=':
             clickButton('btnOperate');
             break;
-        case 46:
+        case 'Delete':
             clickButton('btnClear');
             break;
-        case 8:
+        case 'Backspace':
             clickButton('btnDelete');
             break;
     }
-}
+};

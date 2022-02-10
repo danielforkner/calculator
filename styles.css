@@ -108,7 +108,7 @@ a {
         height: 100px;
     }
     p {
-        transform: rotate(-90deg);
+        transform: rotate(-90deg); 
     }
 }
 
