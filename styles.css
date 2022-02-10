@@ -1,16 +1,36 @@
-.numberGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
-    width: 150px;
-    height: 200px;
+:root {
+    --width: 400px;
+    --btnSize: 50px;
 }
 
-.operationsGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    height: 50px;
-    width: 350px;
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #3800a7;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #2a017e, #5d1d96);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #2a017e, #5d1d96); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    font-family: 'Press Start 2P', cursive;
+    font-size: 12px;
+}
+
+.calcBtn {
+    width: var(--btnSize);
+    font-family: 'Press Start 2P', cursive;
+}
+
+.calcBtn:hover {
+    background-color: purple;
+}
+
+#btnOperate {
+    width: calc(var(--btnSize) * 4);
+}
+
+.topBorder, .bottomBorder, .centerBorder {
+    display: flex;
+    width: calc(var(--width) + var(--btnSize) + var(--btnSize));
+    height: var(--btnSize);
 }
 
 .displayContainer {
@@ -19,7 +39,7 @@
     justify-content: flex-end;
     background: black;
     color: lime;
-    width: 500px;
+    width: var(--width);
     height: 50px;
 }
 
@@ -38,6 +58,20 @@
     background: lime;
     display: inline-block;
     animation: blink 1.15s steps(2) infinite;
+  }
+
+  .calculator {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9;
+  }
+
+  .history {
+    position: absolute;
+    color: lime;
+    z-index: 1;
   }
 
   @keyframes blink {
