@@ -101,6 +101,10 @@ const clickButton = function(btn) {
                 display = display.concat('9');
                 input = input.concat('9');
                 break;
+            // case 'btnSign':
+            //     input = input * -1;
+            //     how to update the display appropriately??
+            //     break;
             case 'btn0':
                 display = display.concat('0');
                 input = input.concat('0');
